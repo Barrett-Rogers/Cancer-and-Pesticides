@@ -6,12 +6,19 @@ library(ggplot2)
 library(plotly)
 library(shiny)
 library(leaflet)
+library(shinythemes)
 
 Lymp <- read.table("data/Underlying Cause of Death - by Year - 1999-2017-6.txt", header = TRUE, sep = '\t', nrows = 1021)
 
 Abb <- read.csv("https://raw.githubusercontent.com/jasonong/List-of-US-States/master/states.csv")
 CP <- CP <- read.table("data/CDC_data_1999-2017.txt", sep = '\t', nrows = 52)
 Lym <- read.table("data/Underlying Cause of Death - by Year - 1999-2017-6.txt", header = FALSE, sep = '\t', nrows = 1022)
+
+Pest <- read.table('https://water.usgs.gov/nawqa/pnsp/usage/maps/county-level/StateLevel/HighEstimate_AgPestUsebyCropGroup92to16.txt', header = TRUE, sep = '\t')
+
+Gly <- Pest %>% 
+  filter(Compound == "GLYPHOSATE")
+
 
 CP <- CP %>% select(-V1, -V3)
 names(CP)[1] <- "State"
@@ -24,7 +31,7 @@ CP <- CP[-c(1),]
 Lym <- Lym %>% select(-V1, -V3)
 names(Lym)[1] <- "State"
   names(Lym)[2] <- "Deaths"
-    names(Lym)[3] <- "Population"
+    names(Lym)[3] <- "Year"
       names(Lym)[4] <- "Crude_Rate"
         names(Lym)[5] <- "Age_Adjusted_Rate"
 Lym <-Lym[-c(1),]
@@ -49,6 +56,11 @@ Lym$Age_Adjusted_Rate <- as.double(Lym$Age_Adjusted_Rate)
 CP_Abb <- merge(CP, Abb, by = 'State')
 
 Lym_Abb <- merge(Lym, Abb, by = 'State')
+
+Gly$State <- as.character(Gly$State)
+Gly$Corn <- as.double(Gly$Corn)
+
+crop_list <- list(Gly$Corn, Gly$Wheat, Gly$Soybeans)
 
 
 

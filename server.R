@@ -28,34 +28,101 @@ shinyServer(
              geo = g
            )})
          
+       #LymMap
        output$LymMap <-renderPlotly({
          g <- list(
            scope = 'usa',
            projection = list(type = 'albers usa'))
          
-         plot_geo(Lym_Abb, locationmode = 'USA-states') %>%
+         Lym_Abb %>%
+           filter(Year == input$year) %>%
+          plot_geo(locationmode = 'USA-states') %>%
            add_trace(
              z = ~Crude_Rate, locations = ~Abbreviation,
              color = ~Crude_Rate, colors = 'Purples'
            ) %>%
-           colorbar(title = "Age Adjusted Rate") %>%
+           colorbar(title = "Crude Rate") %>%
            layout(
-             title = 'Lymphoma Deaths 1999-2017',
+             title = 'Lymphoma Deaths',  #Need to make the title height better..........................!!!!
              geo = g
              
            )})
-        output$map2 <- renderLeaflet({
+       #GlyMap
+       output$GlyMap <-renderPlotly({
+         g <- list(
+           scope = 'usa',
+           projection = list(type = 'albers usa'))
+         
+        Gly %>%
+           filter(Year == input$year) %>%
+           plot_geo(locationmode = 'USA-states') %>%
+           add_trace(
+             z = ~Soybeans, locations = ~Abbreviation,
+             color = ~Soybeans, colors = 'Purples'
+           ) %>%
+           colorbar(title = "Glyphosate Applied") %>%
+           layout(
+             title = 'Glyphosate',
+             geo = g
+             
+           )})
+        output$LymMap_Leaf <- renderLeaflet({
            leaflet() %>% 
              addTiles() %>% 
-             setView(-86.5804, 35.5175, zoom = 7)
+             setView(-86.5804, 35.5175, zoom = 7) %>% 
+            Lym_Abb %>%
+            filter(Year == input$year) 
+            
         })
         output$picture <- renderImage({
           return(list(src = "Roundup_image.PNG", contentType = "image/png", alt = "Alignment"))
         }, deleteFile = FALSE) #where the src is wherever you have the picture
         
+        output$distPlot <- renderPlot({
+          hist(rnorm(input$obs))
+        })
+        output$LymPlot <-renderPlot({
+          Lym_Abb %>%
+          filter(Year != "") %>% 
+          filter(State == input$state) %>%
+          ggplot(aes(x = Year, y = Age_Adjusted_Rate)) + #Need a "Selected == Alabama setting.......................!!!!!!!
+          geom_point() + 
+            labs(title = "Age Adjusted Rate of Lymphoma", x = "Year", y = "Age Adjusted Rate")
+        })
+          
      })
   
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# as.numeric(as.character(Year))
+
+
+
+
 # output$plot <- renderPlotly({
 #   g <- list(
 #     scope = 'usa',

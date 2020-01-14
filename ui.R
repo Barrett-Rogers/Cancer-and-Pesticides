@@ -10,88 +10,181 @@
 
 library(shiny)
 library(shinydashboard)
+library(shinythemes)
 
 
 
 shinyUI(
-  dashboardPage(skin = "green",
-    dashboardHeader(title = 'A Roundup of Disease In America', titleWidth = 350),
-    ## Sidebar content
-    dashboardSidebar(
-      sidebarMenu(
-        menuItem("Welcome", tabName = "Welcome", icon = icon("home")),
-        menuItem("Maps", tabName = "Maps", icon = icon("th")),
-        menuItem('Plots', tabName = 'Plots', icon = icon('dashboard')),
-        menuItem('Closing', tabName = 'Closing', icon = icon('fdashboard')))),
-    ## Body content
-    dashboardBody(
-      tabItems(
-        tabItem(tabName = "Welcome", status = "primary", title = "Welcome", h1("The Glyphosate Debate"), 
-                fluidRow(
-                  box(
-                    title = "", status = "primary", solidHeader = FALSE, height = 0, width = 0,
-                    imageOutput("picture")
-                  )),
-                br(),
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(),
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(),
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(), 
-                br(),
-                h2("more words go here")),
-        tabItem(tabName = "Maps", title = "Maps", 
-                fluidRow(
-                  tabBox(id = "tabset1", height = "400px", width = 10,
-                         tabPanel("Cancers", plotlyOutput("NeoMap")),
-                         tabPanel("Pesticides", plotlyOutput("LymMap")))
-                )), 
-        tabItem(tabName = "Plots", title = "Plots", h2("Put some plots here")), 
-        tabItem(tabName = "Closing", title = "Closing", h2("Related Articles"), h4("
-                                                           https://www.ncbi.nlm.nih.gov/pubmed/31829784"), h4("
-
-[Plurality of opinion, scientific discourse and pseudoscience: an in depth analysis of the Séralini et al. study claiming that Roundup™ Ready corn or the herbicide Roundup™ cause cancer in rats | SpringerLink]"), h4("(https://link.springer.com/article/10.1007/s11248-013-9692-9)"), 
-
-h4("https://pubs.acs.org/doi/abs/10.1021/tx800218n"),
-
-h4("https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5044953/#!po=28.6885"),
-
-h4("https://www.ncbi.nlm.nih.gov/pubmed/?term=Exposure+to+Glyphosate-Based+Herbicides+and+Risk+for+Non-Hodgkin+Lymphoma%3A+A+Meta-Analysis+and+Supporting+Evidence"))
-        )
-    )        
-  )
-)    
+  fluidPage(theme = shinytheme("darkly"),
+    titlePanel(h2("A Roundup of Disease In America")), 
+    sidebarLayout(
+      # Sidebar with a slider input
+      sidebarPanel(
+        selectInput("year", "Year:", Lym_Abb %>% arrange(Year) %>% select(Year), selected = "1999"),
+        selectInput("state", "State:", Lym_Abb %>% arrange(State) %>% select(State), selected = "Alabama"), width = 2 # It still isn't selecting Alabama 
+        #selectInput("crop", "Crop:", Gly %>% arrange(Crop) %>% select(Crop), selected = "Corn"), 
       
+    ),
+      mainPanel(
+        tabsetPanel(
+              tabPanel("Welcome", h1("The Glyphosate Debate"),
+                      fluidRow(imageOutput("picture")), 
+                      br(), 
+                      br(),
+                      br(),
+                      br(),
+                      br(),
+                      br(),
+                      br(),
+                      br(),
+                      br(),
+                      br(),
+                      br(),
+                      br(),
+                      h3("The great issue of herbicides is that we don't yet understand how they will affect our DNA in the generations to come."), 
+                      h2("But there are already manefestations of the widespread use of Roundup in the health of Americans.")), 
+ 
+              tabPanel("Lymphoma Map", plotlyOutput("LymMap")), 
+              tabPanel("Glyphosate Map", plotlyOutput("GlyMap")),  # What's wrong with this map? ....................................!!!!!!!!!
+              tabPanel("Scatter Plots", plotOutput("LymPlot"))
+        
+          )
+        )
+      )
+    )
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# if (interactive()) 
+
+# if (interactive()) {
+#   ui <- fluidPage(
+#     sidebarPanel(
+#       selectInput("plotType", "Plot Type",
+#                   c(Scatter = "scatter", Histogram = "hist")
+#       ),
+#       # Only show this panel if the plot type is a histogram
+#       conditionalPanel(
+#         condition = "input.plotType == 'hist'",
+#         selectInput(
+#           "breaks", "Breaks",
+#           c("Sturges", "Scott", "Freedman-Diaconis", "[Custom]" = "custom")
+#         ),
+#         # Only show this panel if Custom is selected
+#         conditionalPanel(
+#           condition = "input.breaks == 'custom'",
+#           sliderInput("breakCount", "Break Count", min = 1, max = 50, value = 10)
+#         )
+#       )
+#     ),
+#     mainPanel(
+#       plotOutput("plot")
+#     )
+#   )}
+
+    # ## Sidebar content
+    # sidebarLayout(
+    #   # Sidebar with a slider input
+    #     sidebarPanel(
+    #       sliderInput("obs",
+    #                   "Number of observations:",
+    #                   min = 0,
+    #                   max = 1000,
+    #                   value = 500)),
+    #     )),
+    # ## Body content
+    # mainPanel(
+    #   tabsetPanel(
+    #     tabPanel("Welcome", h1("The Glyphosate Debate"), 
+    #             fluidRow(imageOutput("picture")
+    #             )))))
+#                   )),
+#                 br(),
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(),
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(),
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(), 
+#                 br(),
+#                 h2("more words go here")),
+#         tabPanel("Maps", 
+#                 fluidRow(
+#                   tabBox(id = "tabset1", height = "650px", width = 12,
+#                          tabPanel("Cancers", plotlyOutput("NeoMap")), # ConditionalPanel here too
+#                          tabPanel("Pesticides", plotlyOutput("LymMap")))  #Need to put a conditional panel here I think. 
+#                 )), 
+#         tabPanel("Plots", h2("Put some plots here")), 
+#         tabPanel("Closing", h2("Related Articles"), a("
+#                                                            https://www.ncbi.nlm.nih.gov/pubmed/31829784"), br(), a("
+# 
+# [Plurality of opinion, scientific discourse and pseudoscience: an in depth analysis of the Séralini et al. study claiming that Roundup™ Ready corn or the herbicide Roundup™ cause cancer in rats | SpringerLink]"), br(), a("(https://link.springer.com/article/10.1007/s11248-013-9692-9)"), 
+# 
+# br(), a("https://pubs.acs.org/doi/abs/10.1021/tx800218n"),
+# 
+# br(), a("https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5044953/#!po=28.6885"),
+# 
+# br(), a("https://www.ncbi.nlm.nih.gov/pubmed/?term=Exposure+to+Glyphosate-Based+Herbicides+and+Risk+for+Non-Hodgkin+Lymphoma%3A+A+Meta-Analysis+and+Supporting+Evidence"))
+#         )
+#     )        
+  
+
+    
       
       
       
@@ -156,3 +249,11 @@ h4("https://www.ncbi.nlm.nih.gov/pubmed/?term=Exposure+to+Glyphosate-Based+Herbi
 #   tabPanel("USA", plotlyOutput('NeoMap')),
 #   tabPanel("States", leafletOutput('map2'))
 # ))
+
+
+
+
+# menuItem("Welcome", tabName = "Welcome", icon = icon("home")),
+# menuItem("Maps", tabName = "Maps", icon = icon("th")),
+# menuItem('Plots', tabName = 'Plots', icon = icon('dashboard')),
+# menuItem('Closing', tabName = 'Closing', icon = icon('fdashboard'))
